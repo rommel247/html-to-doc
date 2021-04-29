@@ -1,0 +1,292 @@
+
+
+<head>
+    <title>HtmlToDocx</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
+</head>
+<style type="">
+    body{
+        font-weight: lighter;
+    }
+ h1,h2,h3,h5,h4 {
+	font-family: 'Times New Roman', Times, serif;
+	text-align: center;
+    font-weight: lighter;
+}
+.box{
+    text-align: center;
+    min-height: 100px;
+  height: 200px;
+    border-color: black;
+    border:black 1px solid;
+}
+.box-small{
+    text-align: center;
+    min-height: 100px;   
+    border:black 1px  solid ;
+    margin-bottom: 0%;
+}
+table{
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+.table-bottom{
+    text-align: left;
+}
+</style>
+<hr />
+<input type="file" id="fileUpload" />
+<input type="button" id="upload"  value="Upload" onclick="Upload()" />
+<button onclick="Export2Word('exportContent');">Export as .doc</button>
+
+
+<hr />
+<div id="exportContent">
+    <p style="page-break-before: always"></p>
+ <p>
+     <h2>ASSUMPTA TECHNICAL HIGH SCHOOL</h3>
+     <h5>Sta. Monica, San Simon, Pampanga</h5>
+     <h3>SY 2020-2021</h3>
+     <h3>AGREEMENT FORM ON LEARNER’S PERFORMANCE</h3>
+     </p>
+
+<br />
+ <table>
+        <tr>
+            <td style="text-align: left;">
+                Name of Learner:&nbsp;<u><label id="name">____________</label></u>
+            </td>
+            <td>&nbsp;</td>
+            <td>Sec.:&nbsp;<u><label id="sec">____________</label></u></td>
+        </tr>
+        <tr>
+            <td style="text-align: left;">
+                Subject:&nbsp;<u><label id="subject">____________</label>
+            </td>
+            <td>
+                Teacher:&nbsp;<u><label id="teacher">____________</label>
+            </td>
+            <td>
+                Quarter: &nbsp;<u><label id="quarter">____________</label>
+            </td>
+        </tr>
+    </table>
+	<h4>PART 1: Academic Status of the Learner (to be accomplished by the Subject Teacher )</h3>
+
+	<table >
+        <tr>
+            <td class="box-small"><span>Incomplete Requirements:</span></td>
+            <td class="box-small"><span>Action to be Taken/Deadline</span></td>
+        </tr>
+	<tr>
+		<td class="box"><span>&nbsp;<label id="incomplete"></label></span></td>
+		<td class="box"><span><label id="action"></label></span>
+        <br>
+        Deadline: <label id="deadline"></label>
+    </td>
+	</tr>		
+    <tr>
+        <td colspan="2">
+            <span><u>___________________________________</u></span>
+        </td>
+    </tr>
+	
+    <tr>
+        <td colspan="2">
+            <span>Name of Subject Teacher </span>
+        </td>
+    </tr>
+	</table>
+
+	<h3 style="text-align: left;">
+	PART 2: Assigned Staff’s Report:
+	</h3>
+	<table class="bottom-table">
+	<tr>
+        <td style="text-align: left;">a. Date of Conference:<u><label  id="dateofconf1">_____________________</label></u></td>
+        <td>&nbsp;</td>
+        <td style="text-align: right;">Means:<u><label id="means">_____________________</label></td>	
+	</tr>
+	<tr>
+	    <td style="text-align: left;">b. Present in the Conference:<u><label id="presentinconf">_____________________</label></u></td>
+	</tr>
+	<tr>
+        <td style="text-align: left;height:30px;column-span:2 ;" colspan="2">
+        c. Agreement: <ul>
+            <li><u><label id="agreement">__________________________________</label></u></li>
+            <li><u><label id="agreement2">__________________________________</label></u></li>
+            <li><u><label id="agreement3">__________________________________</label></u></li>
+        </ul>
+        </td>
+	</tr>
+    
+	<tr>
+	<td style="text-align: left;">Prepared by:<u><label id="preparedby">_____________________</label></u></td>
+	<td>&nbsp;</td>
+	<td style="text-align: right;">Date:<u><label id="dateprepared">_____________________</label></u></td>
+	</tr>
+	<tr>
+	<td style="text-align: left;padding-left: 3em;">Name and Signature of Assigned Staff</td>
+	<td>&nbsp;</td>
+	
+	</tr>
+	</table>
+	
+	<br />
+	<hr>
+	
+ </p>
+</div>
+
+<div id="dvExcel"></div>
+
+<script>
+    function Export2Word(element, filename = ''){
+        var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+        var postHtml = "</body></html>";
+        var html = preHtml+document.getElementById(element).innerHTML+postHtml;
+    
+        var blob = new Blob(['\ufeff', html], {
+            type: 'application/msword'
+        });
+        
+        // Specify link url
+        var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+        
+        // Specify file name
+        filename = filename?filename+'.doc':'document.doc';
+        
+        // Create download link element
+        var downloadLink = document.createElement("a");
+    
+        document.body.appendChild(downloadLink);
+        
+        if(navigator.msSaveOrOpenBlob ){
+            navigator.msSaveOrOpenBlob(blob, filename);
+        }else{
+            // Create a link to the file
+            downloadLink.href = url;
+            
+            // Setting the file name
+            downloadLink.download = filename;
+            
+            //triggering the function
+            downloadLink.click();
+        }
+        
+        document.body.removeChild(downloadLink);
+    }
+
+
+    function Upload() {
+        
+        //Reference the FileUpload element.
+        var fileUpload = document.getElementById("fileUpload");
+ 
+        //Validate whether File is valid Excel file.
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                var reader = new FileReader();
+ 
+                //For Browsers other than IE.
+                if (reader.readAsBinaryString) {
+                    reader.onload = function (e) {
+                        ProcessExcel(e.target.result);
+                    };
+                    reader.readAsBinaryString(fileUpload.files[0]);
+                } else {
+                    //For IE Browser.
+                    reader.onload = function (e) {
+                        var data = "";
+                        var bytes = new Uint8Array(e.target.result);
+                        for (var i = 0; i < bytes.byteLength; i++) {
+                            data += String.fromCharCode(bytes[i]);
+                        }
+                        ProcessExcel(data);
+                    };
+                    reader.readAsArrayBuffer(fileUpload.files[0]);
+                }
+            } else {
+                alert("This browser does not support HTML5.");
+            }
+        } else {
+            alert("Please upload a valid Excel file.");
+        }
+    };
+
+    function ProcessExcel(data) {
+        //Read the Excel File data.
+        var workbook = XLSX.read(data, {
+            type: 'binary'
+        });
+ 
+        //Fetch the name of First Sheet.
+        var firstSheet = workbook.SheetNames[0];
+ 
+        //Read all rows from First Sheet into an JSON array.
+        var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+ 
+        //Create a HTML Table element.
+        var table = document.createElement("table");
+        table.border = "1";
+ 
+        //Add the header row.
+        var row = table.insertRow(-1);        
+
+        let i =1
+        var exportContent = document.getElementById('exportContent');
+        var defaultContent = document.createElement('div');
+        defaultContent.setAttribute("id","parentdiv");
+        defaultContent.innerHTML = exportContent.innerHTML;
+        for (i = 1; i < excelRows.length+1; i++) {         
+            var currentdiv = document.createElement('div');
+           currentdiv.setAttribute("id","div"+i);
+            currentdiv.innerHTML = defaultContent.innerHTML;
+            exportContent.appendChild(currentdiv);            
+        }     
+       
+        DataBind(excelRows)       
+    };
+
+
+    function DataBind(excelRows){
+        //get the grand parent
+        var children = [].slice.call(document.getElementById('exportContent').getElementsByTagName('div'),0);
+   
+        var elemnts = new Array(children.length);        
+        var arrayLength = children.length;
+
+        for (var i = 0; i < arrayLength; i++) {
+            var divname = children[i].getAttribute("id");//||children[i].getAttribute("class");    
+           // elemnts[i]=name;
+           var field =document.getElementById(divname);
+           field.querySelector("#name").innerHTML = excelRows[i].name;
+           field.querySelector("#quarter").innerHTML = excelRows[i].quarter;
+           field.querySelector("#sec").innerHTML = excelRows[i].sec;
+           field.querySelector("#subject").innerHTML = excelRows[i].subject;
+           field.querySelector("#teacher").innerHTML = excelRows[i].teacher;
+           field.querySelector("#incomplete").innerHTML = excelRows[i].incomplete;
+           field.querySelector("#action").innerHTML = excelRows[i].action;
+           field.querySelector("#deadline").innerHTML = excelRows[i].deadline;           
+           field.querySelector("#dateofconf1").innerHTML = excelRows[i].dateofconf1;
+           field.querySelector("#means").innerHTML = excelRows[i].means;
+           field.querySelector("#presentinconf").innerHTML = excelRows[i].presentinconf;
+           field.querySelector("#agreement").innerHTML = excelRows[i].agreement;
+           field.querySelector("#preparedby").innerHTML = excelRows[i].preparedby;
+           field.querySelector("#dateprepared").innerHTML = excelRows[i].dateprepared;
+           
+          /* var labels = [].slice.call(document.getElementById(divname).getElementsByTagName('label'),0);
+           var labelsarrayLength = labels.length;
+            for(var l=0;l<labelsarrayLength;l++){
+             //  console.log(divname+'/'+labels[l].getAttribute("id"));
+             var field =document.getElementById(divname);
+             field.querySelector
+            }*/
+           //document.getElementById(divname).getElementsByTagName('label')
+        }
+       //console.log(elemnts);
+    };
+    </script>
